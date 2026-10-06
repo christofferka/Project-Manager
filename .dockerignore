@@ -1,0 +1,12 @@
+target/
+.idea/
+.vscode/
+.git/
+.gitignore
+*.iml
+*.log
+.DS_Store
+**/.DS_Store
+HELP.md
+README.md
+qodana.yaml
