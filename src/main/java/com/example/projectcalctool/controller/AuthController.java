@@ -2,6 +2,7 @@ package com.example.projectcalctool.controller;
 
 import com.example.projectcalctool.model.User;
 import com.example.projectcalctool.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -13,13 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AuthController {
 
-    // JDBC baseret service til brugere
     private final UserService userService;
-
-    // Bruges til at tjekke krypterede passwords
     private final PasswordEncoder passwordEncoder;
 
-    // Constructor injection af services
     public AuthController(UserService userService,
                           PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -28,76 +25,90 @@ public class AuthController {
 
     // Viser login siden
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpSession session) {
+        // Hvis allerede logget ind: gaa direkte til dashboard
+        if (session.getAttribute("user") != null) {
+            return "redirect:/dashboard";
+        }
         return "login";
     }
 
-    // Håndterer login formular
+    // Haandterer login
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
-                        HttpSession session) {
+                        HttpServletRequest request) {
 
-        // Henter bruger fra databasen via JDBC
-        User user = userService.getByUsername(username);
+        // Fejlbesked skal vaere identisk uanset om brugernavn eller password er forkert
+        // (undgaar user-enumeration via timing/svartekst).
+        final String failure = "redirect:/login?error=true";
 
-        // Hvis brugeren ikke findes
-        if (user == null) {
-            return "redirect:/login?error=true";
+        if (username == null || username.isBlank()
+                || password == null || password.isEmpty()) {
+            return failure;
         }
 
-        // Henter gemt password
-        String storedPassword = user.getPassword();
+        User user = userService.getByUsername(username);
+        if (user == null) {
+            // Kald encoder alligevel saa timing er den samme som ved en gyldig brugerkonto
+            passwordEncoder.matches(password, "$2a$10$abcdefghijklmnopqrstuv");
+            return failure;
+        }
 
-        // Tjekker om password ligner et bcrypt hash
-        boolean looksHashed =
-                storedPassword.startsWith("$2a$")
-                        || storedPassword.startsWith("$2b$")
-                        || storedPassword.startsWith("$2y$");
+        String stored = user.getPassword();
+        boolean looksHashed = stored != null && (
+                stored.startsWith("$2a$")
+                        || stored.startsWith("$2b$")
+                        || stored.startsWith("$2y$"));
 
         boolean passwordMatches;
-
         if (looksHashed) {
-            // Sammenligner rå password med hash
-            passwordMatches = passwordEncoder.matches(password, storedPassword);
+            passwordMatches = passwordEncoder.matches(password, stored);
         } else {
-            // Sammenligner direkte hvis password ikke er krypteret
-            passwordMatches = storedPassword.equals(password);
-
-            // Opdaterer password hvis det matcher
+            // Legacy: plaintext i DB (migreres til hash ved foerste vellykkede login)
+            passwordMatches = stored != null && stored.equals(password);
             if (passwordMatches) {
                 user.setPassword(password);
                 userService.update(user);
             }
         }
 
-        // Hvis password er forkert
         if (!passwordMatches) {
-            return "redirect:/login?error=true";
+            return failure;
         }
 
-        // Gemmer bruger i session
-        session.setAttribute("user", user);
+        // Session fixation protection: invalider gammel session og lav en ny.
+        // Beskytter mod en angreber der har plantet et session-id i en brugers browser
+        // for at kapre sessionen efter login.
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
+        }
+        HttpSession newSession = request.getSession(true);
+        // Gemm ikke selve password-hashen i sessionen
+        user.setPassword(null);
+        newSession.setAttribute("user", user);
 
-        // Går til dashboard
         return "redirect:/dashboard";
     }
 
-    // Logger brugeren ud
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
 
-    // Viser registreringsside
     @GetMapping("/register")
-    public String registerPage(Model model) {
-        model.addAttribute("isSetupMode", true);
+    public String registerPage(Model model, HttpSession session) {
+        if (session.getAttribute("user") != null) {
+            return "redirect:/dashboard";
+        }
+        // isSetupMode styrer om "Opret som admin"-boksen vises paa register-siden.
+        // Fjernet i produktion for ikke at tillade vilkaarlige admin-oprettelser.
+        model.addAttribute("isSetupMode", userService.isUserTableEmpty());
         return "register";
     }
 
-    // Håndterer registrering af ny bruger
     @PostMapping("/register")
     public String register(@RequestParam String username,
                            @RequestParam String email,
@@ -105,29 +116,31 @@ public class AuthController {
                            @RequestParam String confirmPassword,
                            @RequestParam(required = false) String createAdmin) {
 
-        // Tjekker at passwords matcher
+        if (username == null || username.isBlank()
+                || email == null || email.isBlank()
+                || password == null || password.length() < 4) {
+            return "redirect:/register?error=invalid";
+        }
+
         if (!password.equals(confirmPassword)) {
             return "redirect:/register?error=password";
         }
 
-        // Tjekker om brugernavn allerede findes
         if (userService.getByUsername(username) != null) {
             return "redirect:/register?error=exists";
         }
 
-        // Opretter ny bruger
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
 
-        // Sætter rolle baseret på formular valg
-        user.setRole("true".equals(createAdmin) ? "ADMIN" : "USER");
+        // Admin-rolle kan kun saettes hvis bruger-tabellen er tom (foerste opstart).
+        // Ellers er alt nye brugere USER som default.
+        boolean allowAdminFlag = userService.isUserTableEmpty();
+        user.setRole(allowAdminFlag && "true".equals(createAdmin) ? "ADMIN" : "USER");
 
-        // Gemmer bruger i databasen via JDBC
         userService.create(user);
-
-        // Sender videre til login
         return "redirect:/login?registered=true";
     }
 }
