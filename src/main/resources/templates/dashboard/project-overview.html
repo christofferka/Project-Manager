@@ -23,7 +23,7 @@
     <div class="title-block">
         <span class="eyebrow" th:text="${project.customerName} ?: 'Uden kunde'">Alpha Solutions</span>
         <h1 style="margin-top:14px" th:text="${project.name}">Website Redesign</h1>
-        <p class="lede" style="margin-top:8px">Projektoverblik — vælg en sektion nedenfor eller se nøgletal til højre.</p>
+        <p class="lede" style="margin-top:8px">Projektoverblik. Vælg en sektion nedenfor eller se nøgletal til højre.</p>
     </div>
 </header>
 
@@ -32,7 +32,7 @@
         <div class="icon green">⏱</div>
         <div class="k">Estimerede timer</div>
         <div class="v">
-            <span class="num" th:text="${project.estimatedHours != null ? #numbers.formatDecimal(project.estimatedHours, 1, 0) : '—'}">240</span>
+            <span class="num" th:text="${project.estimatedHours != null ? #numbers.formatDecimal(project.estimatedHours, 1, 0) : '–'}">240</span>
             <span class="unit" th:if="${project.estimatedHours != null}">t</span>
         </div>
     </div>
@@ -40,7 +40,7 @@
         <div class="icon blue">💵</div>
         <div class="k">Timerate</div>
         <div class="v">
-            <span class="num" th:text="${project.hourlyRate != null ? #numbers.formatDecimal(project.hourlyRate, 1, 0) : '—'}">850</span>
+            <span class="num" th:text="${project.hourlyRate != null ? #numbers.formatDecimal(project.hourlyRate, 1, 0) : '–'}">850</span>
             <span class="unit">kr/t</span>
         </div>
     </div>
@@ -105,23 +105,23 @@
                 </tr>
                 <tr>
                     <td style="color:var(--ink-3)">Kunde</td>
-                    <td class="text-right" style="color:var(--ink); font-weight:600" th:text="${project.customerName} ?: '—'">Alpha Solutions</td>
+                    <td class="text-right" style="color:var(--ink); font-weight:600" th:text="${project.customerName} ?: '–'">Alpha Solutions</td>
                 </tr>
                 <tr>
                     <td style="color:var(--ink-3)">Start</td>
-                    <td class="num text-right" th:text="${project.startDate != null ? #temporals.format(project.startDate, 'dd.MM.yyyy') : '—'}">15.01.2026</td>
+                    <td class="num text-right" th:text="${project.startDate != null ? #temporals.format(project.startDate, 'dd.MM.yyyy') : '–'}">15.01.2026</td>
                 </tr>
                 <tr>
                     <td style="color:var(--ink-3)">Slut</td>
-                    <td class="num text-right" th:text="${project.endDate != null ? #temporals.format(project.endDate, 'dd.MM.yyyy') : '—'}">30.04.2026</td>
+                    <td class="num text-right" th:text="${project.endDate != null ? #temporals.format(project.endDate, 'dd.MM.yyyy') : '–'}">30.04.2026</td>
                 </tr>
                 <tr>
                     <td style="color:var(--ink-3)">Timer</td>
-                    <td class="num text-right" th:text="${project.estimatedHours != null ? #numbers.formatDecimal(project.estimatedHours, 1, 0) + ' t' : '—'}">240 t</td>
+                    <td class="num text-right" th:text="${project.estimatedHours != null ? #numbers.formatDecimal(project.estimatedHours, 1, 0) + ' t' : '–'}">240 t</td>
                 </tr>
                 <tr>
                     <td style="color:var(--ink-3)">Rate</td>
-                    <td class="num text-right" th:text="${project.hourlyRate != null ? #numbers.formatDecimal(project.hourlyRate, 1, 0) + ' kr' : '—'}">850 kr</td>
+                    <td class="num text-right" th:text="${project.hourlyRate != null ? #numbers.formatDecimal(project.hourlyRate, 1, 0) + ' kr' : '–'}">850 kr</td>
                 </tr>
                 </tbody>
             </table>

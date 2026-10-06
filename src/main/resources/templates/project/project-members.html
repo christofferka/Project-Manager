@@ -61,11 +61,11 @@
                     <span th:case="'VIEWER'" class="pill role-vw">Viewer</span>
                 </span>
             </td>
-            <td><span th:text="${pu.canEditProject ? '✓' : '—'}" th:style="${pu.canEditProject ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
-            <td><span th:text="${pu.canEditSubprojects ? '✓' : '—'}" th:style="${pu.canEditSubprojects ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
-            <td><span th:text="${pu.canEditTasks ? '✓' : '—'}" th:style="${pu.canEditTasks ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
-            <td><span th:text="${pu.canEditSubtasks ? '✓' : '—'}" th:style="${pu.canEditSubtasks ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
-            <td><span th:text="${pu.canEditCostitems ? '✓' : '—'}" th:style="${pu.canEditCostitems ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
+            <td><span th:text="${pu.canEditProject ? '✓' : '–'}" th:style="${pu.canEditProject ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
+            <td><span th:text="${pu.canEditSubprojects ? '✓' : '–'}" th:style="${pu.canEditSubprojects ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
+            <td><span th:text="${pu.canEditTasks ? '✓' : '–'}" th:style="${pu.canEditTasks ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
+            <td><span th:text="${pu.canEditSubtasks ? '✓' : '–'}" th:style="${pu.canEditSubtasks ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
+            <td><span th:text="${pu.canEditCostitems ? '✓' : '–'}" th:style="${pu.canEditCostitems ? 'color:var(--cta-hover); font-weight:700' : 'color:var(--ink-4)'}"></span></td>
             <td class="actions">
                 <form th:action="@{'/project/' + ${project.id} + '/members/' + ${pu.userId} + '/remove'}" method="post"
                       onsubmit="return confirm('Fjern fra projekt?');">

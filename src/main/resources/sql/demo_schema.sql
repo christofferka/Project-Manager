@@ -1,4 +1,4 @@
--- Demo skema til H2 (in-memory) — matcher produktions MySQL skema.
+-- Demo skema til H2 (in-memory). Matcher produktions MySQL skema.
 
 CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,

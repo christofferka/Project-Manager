@@ -62,16 +62,16 @@
                     <span th:case="'NOT_STARTED'" class="pill status-ns">Ikke startet</span>
                     <span th:case="'IN_PROGRESS'" class="pill status-ip">I gang</span>
                     <span th:case="'DONE'" class="pill status-dn">Færdig</span>
-                    <span th:case="*" class="pill" th:text="${t.statusDisplay}">—</span>
+                    <span th:case="*" class="pill" th:text="">–</span>
                 </span>
             </td>
-            <td class="num" th:text="${t.deadline != null ? #temporals.format(t.deadline, 'dd.MM.yy') : '—'}">01.02.26</td>
-            <td style="color:var(--ink)" th:text="${t.employeeName ?: '—'}">Anna</td>
+            <td class="num" th:text="${t.deadline != null ? #temporals.format(t.deadline, 'dd.MM.yy') : '–'}">01.02.26</td>
+            <td style="color:var(--ink)" th:text="${t.employeeName ?: '–'}">Anna</td>
             <td class="num">
                 <span th:text="${#numbers.formatDecimal(t.estimatedHours ?: 0, 1, 1) + ' t'}">20,0 t</span>
             </td>
             <td class="num">
-                <span th:text="${t.actualHours != null ? #numbers.formatDecimal(t.actualHours, 1, 1) + ' t' : '—'}">12,0 t</span>
+                <span th:text="${t.actualHours != null ? #numbers.formatDecimal(t.actualHours, 1, 1) + ' t' : '–'}">12,0 t</span>
             </td>
             <td class="actions">
                 <a class="btn ghost sm" th:href="@{'/subtasks/' + ${t.id}}">Subtasks</a>

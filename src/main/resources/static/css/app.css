@@ -1,5 +1,5 @@
 /* ===========================================================
-   Project Manager — Modern SaaS design (inspired by projectmanager.com)
+   Project Manager · Modern SaaS design (inspired by projectmanager.com)
    =========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:wght@400;500;700&display=swap');
@@ -1428,7 +1428,7 @@ fieldset.permissions input[type="checkbox"]:checked::after {
 .p-card .status-chip.soon   { background: var(--amber-soft); color: var(--amber); }
 .p-card .status-chip.done   { background: var(--brand-soft); color: var(--brand); }
 
-/* ============== ROADMAP — pretty vertical timeline ============== */
+/* ============== ROADMAP (pretty vertical timeline) ============== */
 
 .roadmap-wrap {
     position: relative;

@@ -63,11 +63,11 @@
         <div class="meta-row">
             <div class="mini">
                 <span class="k">Timer</span>
-                <span class="v num" th:text="${p.estimatedHours != null ? #numbers.formatDecimal(p.estimatedHours, 1, 0) : '—'}">240</span>
+                <span class="v num" th:text="${p.estimatedHours != null ? #numbers.formatDecimal(p.estimatedHours, 1, 0) : '–'}">240</span>
             </div>
             <div class="mini">
                 <span class="k">Rate</span>
-                <span class="v num" th:text="${p.hourlyRate != null ? #numbers.formatDecimal(p.hourlyRate, 1, 0) + ' kr' : '—'}">850 kr</span>
+                <span class="v num" th:text="${p.hourlyRate != null ? #numbers.formatDecimal(p.hourlyRate, 1, 0) + ' kr' : '–'}">850 kr</span>
             </div>
             <div class="mini">
                 <span class="k">Budget</span>

@@ -61,10 +61,10 @@
                     <span th:case="'DONE'"        class="pill status-dn">Færdig</span>
                 </span>
             </td>
-            <td class="num" th:text="${s.deadline != null ? #temporals.format(s.deadline, 'dd.MM.yy') : '—'}">01.02.26</td>
-            <td style="color:var(--ink)" th:text="${s.employeeName ?: '—'}">Anna</td>
+            <td class="num" th:text="${s.deadline != null ? #temporals.format(s.deadline, 'dd.MM.yy') : '–'}">01.02.26</td>
+            <td style="color:var(--ink)" th:text="${s.employeeName ?: '–'}">Anna</td>
             <td class="num" th:text="${#numbers.formatDecimal(s.estimatedHours ?: 0, 1, 1) + ' t'}">5,0 t</td>
-            <td class="num" th:text="${s.actualHours != null ? #numbers.formatDecimal(s.actualHours, 1, 1) + ' t' : '—'}">3,0 t</td>
+            <td class="num" th:text="${s.actualHours != null ? #numbers.formatDecimal(s.actualHours, 1, 1) + ' t' : '–'}">3,0 t</td>
             <td class="actions">
                 <a class="btn ghost sm" th:href="@{'/subtasks/edit/' + ${s.id}}">Rediger</a>
                 <form th:action="@{'/subtasks/delete/' + ${s.id}}" method="post" style="display:inline"
