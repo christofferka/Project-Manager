@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Omkostninger · ' + ${project.name}">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <a th:href="@{/project}">Projekter</a>
+    <span class="sep">/</span>
+    <a th:href="@{'/project/view/' + ${project.id}}" th:text="${project.name}">Projekt</a>
+    <span class="sep">/</span>
+    <span class="current">Omkostninger</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow purple">Omkostninger</span>
+        <h1 style="margin-top:14px" th:text="${project.name}">Projekt</h1>
+        <p class="lede" style="margin-top:8px">Licenser, konsulenter, materialer. Alt der koster penge udover timer.</p>
+    </div>
+    <div class="actions" th:if="${canEditCostitems != false}">
+        <a class="btn primary"
+           th:href="@{'/projects/' + ${project.id} + '/costitems/create'}">+ Ny omkostning</a>
+    </div>
+</header>
+
+<div class="split" th:with="grandTotal=${#aggregates.sum(items.![quantity * unitPrice])}">
+
+    <div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th style="width:50px">#</th>
+                    <th>Post</th>
+                    <th class="num" style="width:90px">Antal</th>
+                    <th class="num" style="width:130px">Enhedspris</th>
+                    <th class="num" style="width:140px">I alt</th>
+                    <th style="width:180px" th:if="${canEditCostitems != false}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c, iter : ${items}">
+                    <td class="num" style="color:var(--ink-3)" th:text="${iter.count}">1</td>
+                    <td><div class="row-title" th:text="${c.name}">Figma License</div></td>
+                    <td class="num" th:text="${#numbers.formatDecimal(c.quantity, 1, 0)}">3</td>
+                    <td class="num" th:text="${#numbers.formatDecimal(c.unitPrice, 1, 0) + ' kr'}">400 kr</td>
+                    <td class="num" style="color:var(--ink); font-weight:700"
+                        th:text="${#numbers.formatDecimal(c.quantity * c.unitPrice, 1, 0) + ' kr'}">1 200 kr</td>
+                    <td class="actions" th:if="${canEditCostitems != false}">
+                        <a class="btn ghost sm"
+                           th:href="@{'/projects/' + ${project.id} + '/costitems/edit/' + ${c.id}}">Rediger</a>
+                        <form th:action="@{'/projects/' + ${project.id} + '/costitems/delete/' + ${c.id}}"
+                              method="post" style="display:inline"
+                              onsubmit="return confirm('Slet?');">
+                            <button type="submit" class="btn danger sm">Slet</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(items)}">
+                    <td th:colspan="${canEditCostitems != false ? 6 : 5}">
+                        <div class="empty">
+                            <span class="em">💸</span>
+                            <strong>Ingen omkostninger endnu</strong>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <aside>
+        <div class="section-title"><h2>Sammendrag</h2></div>
+        <div class="stat-tile" style="margin-bottom:16px">
+            <div class="icon purple">Σ</div>
+            <div class="k">Omkostninger i alt</div>
+            <div class="v">
+                <span class="num" th:text="${#numbers.formatDecimal(grandTotal ?: 0, 1, 0)}">18 500</span>
+                <span class="unit">kr</span>
+            </div>
+            <div class="trend"><span th:text="${#lists.size(items)}">8</span> poster</div>
+        </div>
+        <div class="stat-tile"
+             th:with="hoursCost=${(project.estimatedHours ?: 0) * (project.hourlyRate ?: 0)},
+                      total=${((project.estimatedHours ?: 0) * (project.hourlyRate ?: 0)) + (grandTotal ?: 0)}">
+            <div class="icon green">💰</div>
+            <div class="k">Projektet i alt</div>
+            <div class="v">
+                <span class="num" th:text="${#numbers.formatDecimal(total / 1000, 1, 1)}">222,5</span>
+                <span class="unit">k kr</span>
+            </div>
+            <div class="trend">Timer + omkostninger</div>
+        </div>
+    </aside>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Opgaver · ' + ${project.name}">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <a th:href="@{/project}">Projekter</a>
+    <span class="sep">/</span>
+    <a th:href="@{'/project/view/' + ${project.id}}" th:text="${project.name}">Projekt</a>
+    <span class="sep">/</span>
+    <a th:if="${subproject != null}"
+       th:href="@{'/project/view/' + ${project.id} + '/subprojects'}">Delprojekter</a>
+    <span class="sep" th:if="${subproject != null}">/</span>
+    <span class="current" th:text="${subproject != null ? subproject.name : 'Opgaver'}">Frontend</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow" th:text="${subproject != null ? subproject.name : 'Alle delprojekter'}">Frontend</span>
+        <h1 style="margin-top:14px">Opgaver</h1>
+        <p class="lede" style="margin-top:8px">Estimerede og faktiske timer side om side.</p>
+    </div>
+    <div class="actions" th:if="${subproject != null}">
+        <a class="btn primary"
+           th:href="@{'/project/' + ${project.id} + '/tasks/create?subprojectId=' + ${subproject.id}}">+ Ny opgave</a>
+    </div>
+</header>
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th style="width:50px">#</th>
+            <th>Opgave</th>
+            <th style="width:120px">Status</th>
+            <th style="width:110px">Deadline</th>
+            <th style="width:130px">Ansvarlig</th>
+            <th class="num" style="width:100px">Est.</th>
+            <th class="num" style="width:100px">Faktisk</th>
+            <th style="width:240px"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t, iter : ${tasks}">
+            <td class="num" style="color:var(--ink-3)" th:text="${iter.count}">1</td>
+            <td>
+                <div class="row-title" th:text="${t.name}">UI Wireframes</div>
+                <span class="sub" th:if="${t.description}" th:text="${t.description}">Beskrivelse</span>
+            </td>
+            <td>
+                <span th:switch="${t.status != null ? t.status.name() : 'NOT_STARTED'}">
+                    <span th:case="'NOT_STARTED'" class="pill status-ns">Ikke startet</span>
+                    <span th:case="'IN_PROGRESS'" class="pill status-ip">I gang</span>
+                    <span th:case="'DONE'" class="pill status-dn">Færdig</span>
+                    <span th:case="*" class="pill" th:text="${t.statusDisplay}">—</span>
+                </span>
+            </td>
+            <td class="num" th:text="${t.deadline != null ? #temporals.format(t.deadline, 'dd.MM.yy') : '—'}">01.02.26</td>
+            <td style="color:var(--ink)" th:text="${t.employeeName ?: '—'}">Anna</td>
+            <td class="num">
+                <span th:text="${#numbers.formatDecimal(t.estimatedHours ?: 0, 1, 1) + ' t'}">20,0 t</span>
+            </td>
+            <td class="num">
+                <span th:text="${t.actualHours != null ? #numbers.formatDecimal(t.actualHours, 1, 1) + ' t' : '—'}">12,0 t</span>
+            </td>
+            <td class="actions">
+                <a class="btn ghost sm" th:href="@{'/subtasks/' + ${t.id}}">Subtasks</a>
+                <a class="btn ghost sm" th:href="@{'/project/' + ${project.id} + '/tasks/edit/' + ${t.id}}">Rediger</a>
+                <form th:action="@{'/project/' + ${project.id} + '/tasks/delete/' + ${t.id}}"
+                      method="post" style="display:inline"
+                      onsubmit="return confirm('Slet opgaven?');">
+                    <input type="hidden" name="subprojectId" th:value="${subproject != null ? subproject.id : t.subprojectId}">
+                    <button type="submit" class="btn danger sm">Slet</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(tasks)}">
+            <td colspan="8">
+                <div class="empty">
+                    <span class="em">✓</span>
+                    <strong>Ingen opgaver endnu</strong>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

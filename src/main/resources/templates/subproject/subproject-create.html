@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Nyt delprojekt'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{'/project/' + ${subproject.projectId} + '/subprojects'}">Delprojekter</a>
+    <span class="sep">/</span>
+    <span class="current">Nyt</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow green">Opret</span>
+        <h1 style="margin-top:14px">Nyt delprojekt</h1>
+        <p class="lede" style="margin-top:8px">Et spor i det overordnede projekt — med egne opgaver.</p>
+    </div>
+</header>
+
+<div class="card" style="max-width:680px">
+    <form class="form wide" method="post"
+          th:action="@{'/project/' + ${subproject.projectId} + '/subprojects/create'}"
+          th:object="${subproject}">
+        <div class="field">
+            <label>Navn</label>
+            <input type="text" th:field="*{name}" required autofocus placeholder="fx Frontend">
+        </div>
+        <div class="field">
+            <label>Beskrivelse</label>
+            <textarea th:field="*{description}" placeholder="Hvad omfatter dette spor?"></textarea>
+        </div>
+        <div class="form-actions">
+            <button class="btn primary" type="submit">Opret delprojekt <span class="arrow">→</span></button>
+            <a class="btn ghost" th:href="@{'/project/' + ${subproject.projectId} + '/subprojects'}">Annuller</a>
+        </div>
+    </form>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

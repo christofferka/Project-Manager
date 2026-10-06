@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log ind — Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div class="auth">
+
+    <section class="stage">
+        <a href="/" class="brand">
+            <span class="mark">PM</span>
+            <span>Project Manager</span>
+        </a>
+
+        <h1>Velkommen tilbage</h1>
+        <p class="lede">Log ind for at fortsætte dine projekter.</p>
+
+        <form class="form" action="/login" method="post">
+
+            <div class="field">
+                <label>Brugernavn</label>
+                <input name="username" autofocus required autocomplete="username" placeholder="dit brugernavn">
+            </div>
+
+            <div class="field">
+                <label>Kodeord</label>
+                <input name="password" type="password" required autocomplete="current-password" placeholder="••••••••">
+            </div>
+
+            <div th:if="${param.error}" class="alert error">
+                Forkert brugernavn eller kodeord. Prøv igen.
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary lg" style="width:100%">Log ind <span class="arrow">→</span></button>
+            </div>
+        </form>
+
+        <p class="alt">Ingen konto? <a href="/register" style="font-weight:600">Opret her</a></p>
+
+        <div class="demo-hint">
+            <b>Demo-adgang</b> Brug <code>demo</code> / <code>demo</code> for at udforske alle sider uden at oprette noget.
+        </div>
+    </section>
+
+    <aside class="showcase">
+        <div class="inner">
+            <h2>Projekter der holder tiden. Teams der leverer.</h2>
+            <p>Project Manager samler planlægning, tidsregistrering og økonomi i ét værktøj der er lige så pænt som det er præcist.</p>
+            <div class="points">
+                <div class="point"><span class="dot">✓</span><span>Opret ubegrænsede projekter og delprojekter</span></div>
+                <div class="point"><span class="dot">✓</span><span>Timer og budget beregnes automatisk</span></div>
+                <div class="point"><span class="dot">✓</span><span>Roller og rettigheder på personniveau</span></div>
+                <div class="point"><span class="dot">✓</span><span>Klar til at komme i gang på 60 sekunder</span></div>
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+</body>
+</html>

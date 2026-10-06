@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${project.name} + ' · Project Manager'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <a th:href="@{/project}">Projekter</a>
+    <span class="sep">/</span>
+    <span class="current" th:text="${project.name}">Projekt</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow" th:text="${project.customerName} ?: 'Uden kunde'">Alpha Solutions</span>
+        <h1 style="margin-top:14px" th:text="${project.name}">Website Redesign</h1>
+        <p class="lede" style="margin-top:8px">Projektoverblik — vælg en sektion nedenfor eller se nøgletal til højre.</p>
+    </div>
+</header>
+
+<section class="grid-4" style="margin-bottom:32px">
+    <div class="stat-tile" data-stagger="1">
+        <div class="icon green">⏱</div>
+        <div class="k">Estimerede timer</div>
+        <div class="v">
+            <span class="num" th:text="${project.estimatedHours != null ? #numbers.formatDecimal(project.estimatedHours, 1, 0) : '—'}">240</span>
+            <span class="unit" th:if="${project.estimatedHours != null}">t</span>
+        </div>
+    </div>
+    <div class="stat-tile" data-stagger="2">
+        <div class="icon blue">💵</div>
+        <div class="k">Timerate</div>
+        <div class="v">
+            <span class="num" th:text="${project.hourlyRate != null ? #numbers.formatDecimal(project.hourlyRate, 1, 0) : '—'}">850</span>
+            <span class="unit">kr/t</span>
+        </div>
+    </div>
+    <div class="stat-tile" data-stagger="3"
+         th:with="total=${(project.estimatedHours ?: 0) * (project.hourlyRate ?: 0)}">
+        <div class="icon purple">💰</div>
+        <div class="k">Estimeret honorar</div>
+        <div class="v">
+            <span class="num" th:text="${#numbers.formatDecimal(total / 1000, 1, 1)}">204,0</span>
+            <span class="unit">k kr</span>
+        </div>
+    </div>
+    <div class="stat-tile" data-stagger="4">
+        <div class="icon amber">📅</div>
+        <div class="k">Periode</div>
+        <div class="v" style="font-size:1.1rem" th:with="s=${project.startDate}, e=${project.endDate}">
+            <span th:if="${s != null and e != null}">
+                <span th:text="${#temporals.format(s, 'dd MMM')}">15 jan</span>
+                <span style="color:var(--ink-3); font-weight:400">→</span>
+                <span th:text="${#temporals.format(e, 'dd MMM yyyy')}">30 apr 2026</span>
+            </span>
+            <span th:unless="${s != null and e != null}" style="color:var(--ink-3)">Uspecificeret</span>
+        </div>
+    </div>
+</section>
+
+<div class="split">
+    <div>
+        <div class="section-title"><h2>Sektioner</h2></div>
+        <div class="grid-2">
+            <a th:href="@{'/project/view/' + ${project.id} + '/subprojects'}" class="nav-card" data-stagger="1">
+                <div class="ic blue">◧</div>
+                <h3>Delprojekter</h3>
+                <p>Opdel projektet i faser eller arbejdsspor. Hvert spor har egne opgaver og ansvarlige.</p>
+            </a>
+            <a th:href="@{'/project/view/' + ${project.id} + '/roadmap'}" class="nav-card" data-stagger="2">
+                <div class="ic green">📅</div>
+                <h3>Roadmap</h3>
+                <p>Kronologisk overblik over projektets faser fra start til levering.</p>
+            </a>
+            <a th:href="@{'/projects/' + ${project.id} + '/costitems'}" class="nav-card" data-stagger="3">
+                <div class="ic purple">💰</div>
+                <h3>Omkostninger</h3>
+                <p>Licenser, konsulenter og materialer. Beregner samlet projektbudget.</p>
+            </a>
+            <a th:href="@{'/project/' + ${project.id} + '/members'}" class="nav-card" data-stagger="4">
+                <div class="ic amber">👥</div>
+                <h3>Teammedlemmer</h3>
+                <p>Administrer hvem der har adgang og med hvilke rettigheder.</p>
+            </a>
+        </div>
+    </div>
+
+    <aside>
+        <div class="section-title"><h2>Projektfakta</h2></div>
+        <div class="card" style="padding: 0;">
+            <table class="data-table" style="font-size:13.5px">
+                <tbody>
+                <tr>
+                    <td style="color:var(--ink-3)">Projektnr.</td>
+                    <td class="num text-right" th:text="|#${#numbers.formatInteger(project.id, 4)}|">#0001</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--ink-3)">Kunde</td>
+                    <td class="text-right" style="color:var(--ink); font-weight:600" th:text="${project.customerName} ?: '—'">Alpha Solutions</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--ink-3)">Start</td>
+                    <td class="num text-right" th:text="${project.startDate != null ? #temporals.format(project.startDate, 'dd.MM.yyyy') : '—'}">15.01.2026</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--ink-3)">Slut</td>
+                    <td class="num text-right" th:text="${project.endDate != null ? #temporals.format(project.endDate, 'dd.MM.yyyy') : '—'}">30.04.2026</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--ink-3)">Timer</td>
+                    <td class="num text-right" th:text="${project.estimatedHours != null ? #numbers.formatDecimal(project.estimatedHours, 1, 0) + ' t' : '—'}">240 t</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--ink-3)">Rate</td>
+                    <td class="num text-right" th:text="${project.hourlyRate != null ? #numbers.formatDecimal(project.hourlyRate, 1, 0) + ' kr' : '—'}">850 kr</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </aside>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

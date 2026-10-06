@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Dashboard · Project Manager'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('dashboard')}"></header>
+<main>
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow">Dashboard</span>
+        <h1 style="margin-top:14px">God dag, <span th:text="${user.username}">demo</span>.</h1>
+        <p class="lede" style="margin-top:8px">
+            Du har adgang til <strong style="color:var(--ink)" th:text="${#lists.size(projects)}">3</strong> projekter. Her er din dag i tal.
+        </p>
+    </div>
+    <div class="actions" th:if="${user.role == 'ADMIN'}">
+        <a th:href="@{/project/create}" class="btn primary">+ Nyt projekt</a>
+    </div>
+</header>
+
+<section class="grid-4" th:with="totalHours=${#aggregates.sum(projects.![estimatedHours ?: 0])},
+                                 totalRate=${#aggregates.sum(projects.![(estimatedHours ?: 0) * (hourlyRate ?: 0)])}">
+    <div class="stat-tile" data-stagger="1">
+        <div class="icon blue">◧</div>
+        <div class="k">Aktive projekter</div>
+        <div class="v"><span class="num" th:text="${#lists.size(projects)}">3</span></div>
+        <div class="trend">● Under redaktion</div>
+    </div>
+    <div class="stat-tile" data-stagger="2">
+        <div class="icon green">⏱</div>
+        <div class="k">Estimerede timer</div>
+        <div class="v">
+            <span class="num" th:text="${#numbers.formatDecimal(totalHours ?: 0, 1, 0)}">1140</span>
+            <span class="unit">t</span>
+        </div>
+        <div class="trend">Σ på tværs af alle</div>
+    </div>
+    <div class="stat-tile" data-stagger="3">
+        <div class="icon purple">💰</div>
+        <div class="k">Estimeret omsætning</div>
+        <div class="v">
+            <span class="num" th:text="${#numbers.formatDecimal((totalRate ?: 0) / 1000, 1, 1)}">1 040,5</span>
+            <span class="unit">k kr</span>
+        </div>
+        <div class="trend">Timer × rate</div>
+    </div>
+    <div class="stat-tile" data-stagger="4">
+        <div class="icon amber">⚑</div>
+        <div class="k">Din rolle</div>
+        <div class="v" style="font-size:1.5rem" th:text="${user.role == 'ADMIN' ? 'Administrator' : 'Bruger'}">Administrator</div>
+        <div class="trend" th:text="${user.role}">ADMIN</div>
+    </div>
+</section>
+
+<div class="split" style="margin-top: 36px;">
+
+    <div>
+        <div class="section-title">
+            <h2>Dine projekter</h2>
+            <a th:href="@{/project}" class="btn ghost sm">Se alle <span class="arrow">→</span></a>
+        </div>
+
+        <div class="grid-2">
+            <a th:each="p, iter : ${projects}"
+               th:href="@{'/project/view/' + ${p.id}}"
+               class="p-card"
+               th:classappend="'g' + ${(iter.index % 6) + 1}"
+               th:attr="data-stagger=${iter.count}"
+               th:with="today=${T(java.time.LocalDate).now()},
+                        hasDates=${p.startDate != null and p.endDate != null},
+                        totalDays=${hasDates ? T(java.time.temporal.ChronoUnit).DAYS.between(p.startDate, p.endDate) : 0},
+                        elapsedDays=${hasDates ? T(java.time.temporal.ChronoUnit).DAYS.between(p.startDate, today) : 0},
+                        rawPct=${hasDates and totalDays > 0 ? elapsedDays * 100 / totalDays : (p.startDate != null and today.isAfter(p.endDate) ? 100 : 0)},
+                        pct=${rawPct > 100 ? 100 : (rawPct < 0 ? 0 : rawPct)},
+                        status=${!hasDates ? 'planned' : (today.isBefore(p.startDate) ? 'planned' : (today.isAfter(p.endDate) ? 'done' : (pct >= 80 ? 'soon' : 'active')))}">
+                <span th:class="|status-chip ${status == 'planned' ? '' : status}|"
+                      th:text="${status == 'done' ? 'Afsluttet' : (status == 'active' ? 'I gang' : (status == 'soon' ? 'Nær deadline' : 'Planlagt'))}">
+                    I gang
+                </span>
+                <span class="customer" th:text="${p.customerName} ?: 'Uden kunde'">Alpha Solutions</span>
+                <h3 th:text="${p.name}">Website Redesign</h3>
+
+                <div class="pb-mini">
+                    <div class="top">
+                        <span class="k">Tidsplan</span>
+                        <span class="pct"><span th:text="${pct}">42</span>%</span>
+                    </div>
+                    <div class="track">
+                        <div class="fill"
+                             th:classappend="${status == 'done' ? 'green' : (status == 'soon' ? 'amber' : (status == 'active' ? '' : 'rose'))}"
+                             th:style="'width:' + ${pct} + '%'"></div>
+                    </div>
+                </div>
+
+                <div class="meta-row">
+                    <div class="mini">
+                        <span class="k">Timer</span>
+                        <span class="v num" th:text="${#numbers.formatDecimal(p.estimatedHours ?: 0, 1, 0)}">240</span>
+                    </div>
+                    <div class="mini">
+                        <span class="k">Rate</span>
+                        <span class="v num" th:text="${p.hourlyRate != null ? #numbers.formatDecimal(p.hourlyRate, 1, 0) + ' kr' : '—'}">850 kr</span>
+                    </div>
+                    <div class="mini">
+                        <span class="k">Budget</span>
+                        <span class="v num"
+                              th:text="${#numbers.formatDecimal(((p.estimatedHours ?: 0) * (p.hourlyRate ?: 0)) / 1000, 1, 0) + 'k'}">204k</span>
+                    </div>
+                </div>
+            </a>
+
+            <div class="empty" th:if="${#lists.isEmpty(projects)}" style="grid-column: 1 / -1">
+                <span class="em">📂</span>
+                <strong>Ingen projekter endnu</strong>
+                <span>Opret det første for at komme i gang</span>
+            </div>
+        </div>
+    </div>
+
+    <aside>
+        <div class="section-title"><h2>Timer pr. projekt</h2></div>
+        <div class="card">
+            <div class="bars" th:with="totalH=${#aggregates.sum(projects.![estimatedHours ?: 0])}">
+                <div class="bar-item" th:each="p, iter : ${projects}">
+                    <div class="top">
+                        <span class="name" th:text="${p.name}">Website Redesign</span>
+                        <span class="val"><span th:text="${#numbers.formatDecimal(p.estimatedHours ?: 0, 1, 0)}">240</span> t</span>
+                    </div>
+                    <div class="track">
+                        <div class="fill"
+                             th:classappend="${iter.index % 4 == 1 ? 'g' : (iter.index % 4 == 2 ? 'a' : (iter.index % 4 == 3 ? 'p' : ''))}"
+                             th:style="'width:' + ${totalH > 0 ? (p.estimatedHours ?: 0) * 100 / totalH : 0} + '%; animation-delay:' + ${0.1 + iter.index * 0.08} + 's;'"></div>
+                    </div>
+                </div>
+                <div class="empty" th:if="${#lists.isEmpty(projects)}">Ingen data endnu</div>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top:36px"><h2>Hurtige handlinger</h2></div>
+        <div class="card" style="padding: 8px;">
+            <a th:href="@{/project/create}" style="display:flex; padding:14px 16px; gap:12px; align-items:center; border-radius:8px; color:var(--ink); font-size:14.5px; font-weight:500" onmouseover="this.style.background='var(--bg-soft)'" onmouseout="this.style.background='transparent'">
+                <span style="width:36px; height:36px; border-radius:9px; background:var(--brand-soft); color:var(--brand); display:grid; place-items:center; font-size:18px; font-weight:700">+</span>
+                <div><div>Opret nyt projekt</div><div style="font-size:12.5px; color:var(--ink-3); font-weight:400">Start en ny opgavestruktur</div></div>
+            </a>
+            <a th:href="@{/project}" style="display:flex; padding:14px 16px; gap:12px; align-items:center; border-radius:8px; color:var(--ink); font-size:14.5px; font-weight:500" onmouseover="this.style.background='var(--bg-soft)'" onmouseout="this.style.background='transparent'">
+                <span style="width:36px; height:36px; border-radius:9px; background:var(--cta-soft); color:var(--cta-hover); display:grid; place-items:center; font-size:18px">▦</span>
+                <div><div>Se alle projekter</div><div style="font-size:12.5px; color:var(--ink-3); font-weight:400">Browse hele porteføljen</div></div>
+            </a>
+            <a th:if="${user.role == 'ADMIN'}" th:href="@{/admin/users}" style="display:flex; padding:14px 16px; gap:12px; align-items:center; border-radius:8px; color:var(--ink); font-size:14.5px; font-weight:500" onmouseover="this.style.background='var(--bg-soft)'" onmouseout="this.style.background='transparent'">
+                <span style="width:36px; height:36px; border-radius:9px; background:#efeaff; color:var(--purple); display:grid; place-items:center; font-size:18px">👥</span>
+                <div><div>Administrer brugere</div><div style="font-size:12.5px; color:var(--ink-3); font-weight:400">Roller og adgangskontrol</div></div>
+            </a>
+        </div>
+    </aside>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

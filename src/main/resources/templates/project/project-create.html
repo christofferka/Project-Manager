@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Nyt projekt'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/project}">Projekter</a>
+    <span class="sep">/</span>
+    <span class="current">Nyt</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow green">Opret</span>
+        <h1 style="margin-top:14px">Nyt projekt</h1>
+        <p class="lede" style="margin-top:8px">Udfyld hvad du ved nu. Resten kan tilføjes undervejs.</p>
+    </div>
+    <div class="actions">
+        <a th:href="@{/project}" class="btn ghost">← Tilbage</a>
+    </div>
+</header>
+
+<div class="card" style="max-width:720px">
+    <form th:action="@{/project/create}" method="post" class="form wide">
+        <div class="field">
+            <label>Projektnavn</label>
+            <input type="text" name="name" required autofocus placeholder="fx Website Redesign">
+        </div>
+        <div class="field">
+            <label>Kunde</label>
+            <input type="text" name="customerName" placeholder="fx Alpha Solutions">
+        </div>
+        <div class="form-row">
+            <div class="field">
+                <label>Startdato</label>
+                <input type="date" name="startDate">
+            </div>
+            <div class="field">
+                <label>Slutdato</label>
+                <input type="date" name="endDate">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="field">
+                <label>Timepris (kr)</label>
+                <input type="number" name="hourlyRate" step="0.01" placeholder="850">
+            </div>
+            <div class="field">
+                <label>Estimerede timer</label>
+                <input type="number" name="estimatedHours" step="0.01" placeholder="240">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn primary">Opret projekt <span class="arrow">→</span></button>
+            <a th:href="@{/project}" class="btn ghost">Annuller</a>
+        </div>
+    </form>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

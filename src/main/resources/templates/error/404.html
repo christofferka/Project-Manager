@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Siden findes ikke · 404'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('')}"></header>
+<main>
+<div class="err">
+    <div>
+        <div class="code">404</div>
+        <h1>Siden findes ikke</h1>
+        <p>Linket er måske forældet, eller også har siden skiftet navn.</p>
+        <a th:href="@{/dashboard}" class="btn primary">Tilbage til dashboard <span class="arrow">→</span></a>
+    </div>
+</div>
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

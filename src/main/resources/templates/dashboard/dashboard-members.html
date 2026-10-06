@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Medlemmer · Dashboard'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('admin')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <span class="current">Medlemmer</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow">Admin</span>
+        <h1 style="margin-top:14px">Alle medlemmer</h1>
+        <p class="lede" style="margin-top:8px">Oversigt over alle brugere i systemet.</p>
+    </div>
+</header>
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Bruger</th>
+            <th>Email</th>
+            <th style="width:160px">Rolle</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${members}">
+            <td>
+                <div style="display:flex; gap:10px; align-items:center">
+                    <span style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, var(--brand), var(--purple)); color:#fff; display:grid; place-items:center; font-size:12px; font-weight:700; text-transform:uppercase"
+                          th:text="${#strings.substring(m.username,0,1)}">U</span>
+                    <div class="row-title" th:text="${m.username}">bruger</div>
+                </div>
+            </td>
+            <td th:text="${m.email}">email@example.com</td>
+            <td>
+                <span th:switch="${m.role}">
+                    <span th:case="'ADMIN'" class="pill role-adm">Administrator</span>
+                    <span th:case="*" class="pill role-vw" th:text="${m.role}">User</span>
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

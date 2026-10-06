@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Layout fragments</title>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header" th:fragment="header(active)">
+    <div class="inner">
+        <a th:href="@{/}" class="brand">
+            <span class="mark">PM</span>
+            <span>Project Manager</span>
+        </a>
+
+        <nav class="site-nav">
+            <a th:href="@{/dashboard}" th:classappend="${active} == 'dashboard' ? 'active'">Dashboard</a>
+            <a th:href="@{/project}"   th:classappend="${active} == 'projects'  ? 'active'">Projekter</a>
+            <a th:href="@{/admin/users}" th:if="${session.user != null and session.user.role == 'ADMIN'}"
+               th:classappend="${active} == 'admin' ? 'active'">Administration</a>
+        </nav>
+
+        <div class="site-actions">
+            <span class="user-chip" th:if="${session.user != null}">
+                <span class="avatar" th:text="${#strings.substring(session.user.username, 0, 1)}">D</span>
+                <span th:text="${session.user.username}">demo</span>
+                <span class="role" th:text="${session.user.role}">ADMIN</span>
+            </span>
+            <a th:href="@{/logout}" class="btn ghost sm" th:if="${session.user != null}">Log ud</a>
+            <a th:href="@{/login}"  class="btn blue sm" th:unless="${session.user != null}">Log ind</a>
+        </div>
+    </div>
+</header>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer" th:fragment="footer">
+    <div class="inner">
+        <span>© 2026 Project Manager &nbsp;·&nbsp; Projektstyring der tæller timer, ikke klik</span>
+        <span>
+            <a th:href="@{/}">Forside</a> &nbsp;·&nbsp;
+            <a th:href="@{/dashboard}">Dashboard</a>
+        </span>
+    </div>
+</footer>
+
+<!-- Bagudkompatibel: gamle templates bruger th:replace="base :: content" -->
+<div th:fragment="content">
+    <div th:replace="~{::body/*}"></div>
+</div>
+
+</body>
+</html>

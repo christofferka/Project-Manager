@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Roadmap · ' + ${project.name}">Roadmap</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <a th:href="@{/project}">Projekter</a>
+    <span class="sep">/</span>
+    <a th:href="@{'/project/view/' + ${project.id}}" th:text="${project.name}">Projekt</a>
+    <span class="sep">/</span>
+    <span class="current">Roadmap</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow green">Roadmap</span>
+        <h1 style="margin-top:14px">Projektets rejse</h1>
+        <p class="lede" style="margin-top:8px">
+            Fem faser fra opstart til levering — med klar visuel fremdrift og milepæle.
+        </p>
+    </div>
+    <div class="actions">
+        <a th:href="@{'/project/view/' + ${project.id}}" class="btn ghost">← Tilbage</a>
+    </div>
+</header>
+
+<!-- Horizontal fase-strip (hurtigt overblik) -->
+<div class="phase-strip" style="margin-bottom: 36px" th:with="currentPhase=${2}">
+    <div class="phase-chip" th:each="r, iter : ${roadmap}">
+        <span class="idx" th:text="|Fase ${iter.count}|">Fase 01</span>
+        <span class="nm" th:text="${r.title}">Titel</span>
+        <span class="st"
+              th:classappend="${iter.index < currentPhase ? 'ok' : (iter.index == currentPhase ? 'now' : '')}"
+              th:text="${iter.index < currentPhase ? 'Færdig' : (iter.index == currentPhase ? 'I gang' : 'Kommer')}">I gang</span>
+    </div>
+</div>
+
+<!-- Samlet fremdrift -->
+<div class="card" style="margin-bottom: 36px"
+     th:with="currentPhase=${2}, total=${#lists.size(roadmap)}, pct=${total > 0 ? (currentPhase * 100 / total) : 0}">
+    <div class="progress-big">
+        <div class="pb-head">
+            <span class="pb-label">Samlet projektfremdrift</span>
+            <span class="pb-val"><span th:text="${pct}">40</span><span class="suffix">%</span></span>
+        </div>
+        <div class="pb-track">
+            <div class="pb-fill" th:style="'width:' + ${pct} + '%'"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--ink-3); margin-top:4px;">
+            <span th:text="|${currentPhase} af ${total} faser gennemført|">2 af 5 faser gennemført</span>
+            <span>Mål: 100%</span>
+        </div>
+    </div>
+</div>
+
+<div class="section-title"><h2>Faser i detaljer</h2></div>
+
+<div class="roadmap-wrap" th:with="currentPhase=${2}">
+    <div class="rm-step"
+         th:each="r, iter : ${roadmap}"
+         th:attr="data-color=${iter.index == 0 ? 'blue' : (iter.index == 1 ? 'purple' : (iter.index == 2 ? 'rose' : (iter.index == 3 ? 'amber' : 'green')))}">
+
+        <div class="rm-dot">
+            <div class="circle" th:text="${iter.count}">1</div>
+        </div>
+
+        <div class="rm-card">
+            <span class="phase-label"
+                  th:text="|Fase ${#numbers.formatInteger(iter.count, 2)} · ${iter.index < currentPhase ? 'Færdig' : (iter.index == currentPhase ? 'I gang' : 'Kommer')}|">
+                Fase 01
+            </span>
+            <h3 th:text="${r.title}">Titel</h3>
+            <p th:text="${r.description}">Beskrivelse</p>
+            <div class="rm-meta">
+                <span>⏱ Varighed: <b th:text="|${(iter.index + 1) * 2} uger|">2 uger</b></span>
+                <span>👥 Team: <b th:text="|${(iter.index % 3) + 2} personer|">3 personer</b></span>
+                <span>◧ Milepæl: <b th:text="|M${iter.count}|">M1</b></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty" th:if="${#lists.isEmpty(roadmap)}">
+        <span class="em">🗺</span>
+        <strong>Ingen roadmap endnu</strong>
+    </div>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

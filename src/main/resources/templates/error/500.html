@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Noget gik galt · 500'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('')}"></header>
+<main>
+<div class="err">
+    <div>
+        <div class="code">500</div>
+        <h1>Noget gik galt</h1>
+        <p th:text="${message} ?: 'Serveren mødte en uventet fejl. Prøv igen om et øjeblik.'">
+            Serveren mødte en uventet fejl.
+        </p>
+        <a th:href="@{/dashboard}" class="btn primary">Tilbage til dashboard <span class="arrow">→</span></a>
+    </div>
+</div>
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

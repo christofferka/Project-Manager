@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Opret konto — Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div class="auth">
+
+    <section class="stage">
+        <a href="/" class="brand">
+            <span class="mark">PM</span>
+            <span>Project Manager</span>
+        </a>
+
+        <h1 th:text="${isSetupMode} ? 'Opret den første administrator' : 'Opret konto'">Opret konto</h1>
+        <p class="lede" th:text="${isSetupMode} ? 'Du er den første bruger. Denne konto bliver systemets primære administrator.' : 'Fire linjer, én knap. Så er du i gang.'">
+            Fire linjer, én knap. Så er du i gang.
+        </p>
+
+        <form class="form" th:action="@{/register}" method="post">
+
+            <div class="field">
+                <label>Brugernavn</label>
+                <input type="text" name="username" required placeholder="fx anna.k">
+            </div>
+
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" required placeholder="dig@firma.dk">
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label>Kodeord</label>
+                    <input type="password" name="password" required placeholder="••••••••">
+                </div>
+                <div class="field">
+                    <label>Gentag</label>
+                    <input type="password" name="confirmPassword" required placeholder="••••••••">
+                </div>
+            </div>
+
+            <fieldset class="permissions" th:if="${isSetupMode}">
+                <legend>Setup</legend>
+                <label>
+                    <input type="checkbox" name="createAdmin" value="true" checked>
+                    Opret mig som administrator
+                </label>
+            </fieldset>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary lg" style="width:100%">Opret konto <span class="arrow">→</span></button>
+            </div>
+        </form>
+
+        <p class="alt" th:if="${!isSetupMode}">Har du allerede konto? <a th:href="@{/login}" style="font-weight:600">Log ind her</a></p>
+    </section>
+
+    <aside class="showcase">
+        <div class="inner">
+            <h2>Få det store overblik — fra dag ét.</h2>
+            <p>Hop ind, opret dit første projekt, og se hvor nemt det er at holde styr på timer, teams og budget.</p>
+            <div class="points">
+                <div class="point"><span class="dot">1</span><span>Opret projekt — navn, kunde, timepris</span></div>
+                <div class="point"><span class="dot">2</span><span>Byg strukturen med delprojekter og opgaver</span></div>
+                <div class="point"><span class="dot">3</span><span>Inviter dit team og delegér adgang</span></div>
+                <div class="point"><span class="dot">4</span><span>Følg fremdrift og økonomi i dashboardet</span></div>
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+</body>
+</html>

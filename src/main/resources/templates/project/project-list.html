@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Projekter · Project Manager'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <span class="current">Projekter</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow">Portefølje</span>
+        <h1 style="margin-top:14px">Projekter</h1>
+        <p class="lede" style="margin-top:8px">Alle igangværende og planlagte projekter. Hver bjælke viser hvor langt tidsplanen er fremme.</p>
+    </div>
+    <div class="actions">
+        <a th:href="@{/project/create}" class="btn primary">+ Nyt projekt</a>
+    </div>
+</header>
+
+<div class="grid-3">
+    <a th:each="p, iter : ${project}"
+       th:href="@{'/project/view/' + ${p.id}}"
+       class="p-card"
+       th:classappend="'g' + ${(iter.index % 6) + 1}"
+       th:attr="data-stagger=${iter.count}"
+       th:with="today=${T(java.time.LocalDate).now()},
+                hasDates=${p.startDate != null and p.endDate != null},
+                totalDays=${hasDates ? T(java.time.temporal.ChronoUnit).DAYS.between(p.startDate, p.endDate) : 0},
+                elapsedDays=${hasDates ? T(java.time.temporal.ChronoUnit).DAYS.between(p.startDate, today) : 0},
+                rawPct=${hasDates and totalDays > 0 ? elapsedDays * 100 / totalDays : (p.startDate != null and today.isAfter(p.endDate) ? 100 : 0)},
+                pct=${rawPct > 100 ? 100 : (rawPct < 0 ? 0 : rawPct)},
+                status=${!hasDates ? 'planned' : (today.isBefore(p.startDate) ? 'planned' : (today.isAfter(p.endDate) ? 'done' : (pct >= 80 ? 'soon' : 'active')))}">
+        <span th:class="|status-chip ${status == 'planned' ? '' : status}|"
+              th:text="${status == 'done' ? 'Afsluttet' : (status == 'active' ? 'I gang' : (status == 'soon' ? 'Nær deadline' : 'Planlagt'))}">
+            I gang
+        </span>
+        <span class="customer" th:text="${p.customerName} ?: 'Uden kunde'">Alpha Solutions</span>
+        <h3 th:text="${p.name}">Website Redesign</h3>
+
+        <div class="pb-mini">
+            <div class="top">
+                <span class="k">Tidsplan</span>
+                <span class="pct"><span th:text="${pct}">42</span>%</span>
+            </div>
+            <div class="track">
+                <div class="fill"
+                     th:classappend="${status == 'done' ? 'green' : (status == 'soon' ? 'amber' : (status == 'active' ? '' : 'rose'))}"
+                     th:style="'width:' + ${pct} + '%'"></div>
+            </div>
+        </div>
+
+        <div class="meta-row">
+            <div class="mini">
+                <span class="k">Timer</span>
+                <span class="v num" th:text="${p.estimatedHours != null ? #numbers.formatDecimal(p.estimatedHours, 1, 0) : '—'}">240</span>
+            </div>
+            <div class="mini">
+                <span class="k">Rate</span>
+                <span class="v num" th:text="${p.hourlyRate != null ? #numbers.formatDecimal(p.hourlyRate, 1, 0) + ' kr' : '—'}">850 kr</span>
+            </div>
+            <div class="mini">
+                <span class="k">Budget</span>
+                <span class="v num"
+                      th:text="${#numbers.formatDecimal(((p.estimatedHours ?: 0) * (p.hourlyRate ?: 0)) / 1000, 1, 0) + 'k'}">204k</span>
+            </div>
+        </div>
+    </a>
+
+    <div class="empty" th:if="${#lists.isEmpty(project)}" style="grid-column: 1 / -1">
+        <span class="em">📂</span>
+        <strong>Ingen projekter endnu</strong>
+        <span>Opret dit første projekt for at komme i gang</span>
+        <div style="margin-top:16px"><a th:href="@{/project/create}" class="btn primary">+ Opret projekt</a></div>
+    </div>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

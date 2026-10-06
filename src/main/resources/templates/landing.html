@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project Manager — Projektstyring der holder styr på timer, teams og budget</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="inner">
+        <a href="/" class="brand">
+            <span class="mark">PM</span>
+            <span>Project Manager</span>
+        </a>
+        <nav class="site-nav">
+            <a href="#features">Funktioner</a>
+            <a href="#how">Sådan virker det</a>
+            <a href="#pricing">Priser</a>
+        </nav>
+        <div class="site-actions">
+            <a href="/login" class="btn ghost sm">Log ind</a>
+            <a href="/register" class="btn primary sm">Kom gratis i gang</a>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="inner">
+        <div>
+            <span class="eyebrow">★ Ny version · 2026</span>
+            <h1>
+                Projektstyring der <em>faktisk</em> holder styr på timer, teams og budget.
+            </h1>
+            <p class="lede">
+                Planlæg projekter, fordel opgaver og hold styr på økonomien i ét samlet værktøj.
+                Bygget til teams der leverer — uden støj, uden lærekurve.
+            </p>
+            <div class="cta-row">
+                <a href="/register" class="btn primary lg">Start gratis <span class="arrow">→</span></a>
+                <a href="/login" class="btn ghost lg">Se demo</a>
+            </div>
+            <div class="trust">
+                <div class="avatars">
+                    <span>A</span><span>M</span><span>K</span><span>+</span>
+                </div>
+                <span><b style="color:var(--ink)">4.9/5</b> gennemsnit · Teams der leverer til tiden</span>
+            </div>
+        </div>
+
+        <div class="hero-preview" aria-hidden="true">
+            <div class="top-bar"><i></i><i></i><i></i></div>
+            <div class="body">
+                <div class="mini-head">
+                    <h4>Website Redesign</h4>
+                    <span class="chip">● I gang</span>
+                </div>
+                <div class="row b">
+                    <span>UI Wireframes</span>
+                    <span class="n">20 t</span>
+                </div>
+                <div class="row">
+                    <span>Design System</span>
+                    <span class="n">40 t</span>
+                </div>
+                <div class="row">
+                    <span>Component Rewrite</span>
+                    <span class="n">60 t</span>
+                </div>
+                <div class="bar"><span style="width:62%"></span></div>
+                <div class="stats">
+                    <div><div class="k">Timer</div><div class="v">240</div></div>
+                    <div><div class="k">Budget</div><div class="v">204k</div></div>
+                    <div><div class="k">Team</div><div class="v">4</div></div>
+                </div>
+            </div>
+            <div class="float">
+                <div class="ic">✓</div>
+                <div class="text">
+                    <b>Opgave fuldført</b>
+                    <span>UI Wireframes · 12t brugt</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="logo-strip">
+    <div class="title">Betroet af teams der leverer</div>
+    <div class="brands">
+        <span>Alpha Solutions</span>
+        <span>TechCorp</span>
+        <span>NordicApps</span>
+        <span>Modular Studio</span>
+        <span>Northline</span>
+    </div>
+</div>
+
+<section class="feature-section" id="features">
+    <div class="head">
+        <span class="eyebrow">Funktioner</span>
+        <h2>Alt det du har brug for. Intet du ikke har.</h2>
+        <p class="lede" style="margin: 0 auto">Fire sammenhængende funktioner der dækker livscyklussen for et projekt — fra planlægning til faktura.</p>
+    </div>
+    <div class="grid-4">
+        <div class="feat" data-stagger="1">
+            <div class="ic blue">◧</div>
+            <h3>Projekt-struktur</h3>
+            <p>Opdel i delprojekter, opgaver og subtasks. Alt bindes sammen, så ansvar er krystalklart.</p>
+        </div>
+        <div class="feat" data-stagger="2">
+            <div class="ic green">⏱</div>
+            <h3>Tid &amp; estimat</h3>
+            <p>Estimerede og faktiske timer side om side. Få øje på afvigelser før de bliver kostbare.</p>
+        </div>
+        <div class="feat" data-stagger="3">
+            <div class="ic purple">⚖</div>
+            <h3>Budget &amp; omkostninger</h3>
+            <p>Timepris, licenser og konsulentomkostninger beregnes automatisk til et samlet honorar.</p>
+        </div>
+        <div class="feat" data-stagger="4">
+            <div class="ic amber">⚑</div>
+            <h3>Teams &amp; roller</h3>
+            <p>Administrator, Editor, Viewer. Giv den rette adgang til det rette projekt — pr. person.</p>
+        </div>
+    </div>
+</section>
+
+<section id="how" style="background: var(--bg-soft); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+    <div style="max-width: var(--page-max); margin: 0 auto; padding: 0 var(--pad-x);">
+        <div class="head" style="text-align:center; max-width:640px; margin:0 auto 48px">
+            <span class="eyebrow green">Sådan virker det</span>
+            <h2 style="margin:16px 0 14px">Tre skridt. Og du er oppe at køre.</h2>
+        </div>
+        <div class="grid-3">
+            <div class="card" data-stagger="1">
+                <div style="font-size:3rem; font-weight:800; background: linear-gradient(135deg, var(--brand), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing:-0.03em; margin-bottom:12px;">01</div>
+                <h3>Opret projektet</h3>
+                <p style="color: var(--ink-3)">Giv projektet et navn, en kunde, en timepris og et estimat. Resten tilføjes undervejs.</p>
+            </div>
+            <div class="card" data-stagger="2">
+                <div style="font-size:3rem; font-weight:800; background: linear-gradient(135deg, var(--cta), var(--teal)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing:-0.03em; margin-bottom:12px;">02</div>
+                <h3>Byg strukturen</h3>
+                <p style="color: var(--ink-3)">Opdel i delprojekter og opret opgaver med deadlines, timeestimater og ansvarlige.</p>
+            </div>
+            <div class="card" data-stagger="3">
+                <div style="font-size:3rem; font-weight:800; background: linear-gradient(135deg, var(--amber), var(--rose)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing:-0.03em; margin-bottom:12px;">03</div>
+                <h3>Følg fremdriften</h3>
+                <p style="color: var(--ink-3)">Dashboardet viser status, budgetforbrug og tid. Teamet logger ind og bidrager direkte.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-band" id="pricing">
+    <div class="inner">
+        <h2>Klar til at prøve det selv?</h2>
+        <p>Gratis demo, ingen kreditkort. Log ind som <code style="background:rgba(255,255,255,.15); padding:3px 8px; border-radius:4px; font-family:var(--font-mono); font-size:.9em">demo / demo</code> og udforsk alle sider.</p>
+        <div class="cta-row" style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+            <a href="/login" class="btn primary lg">Åbn demo <span class="arrow">→</span></a>
+            <a href="/register" class="btn ghost lg" style="background:transparent; color:#fff; border-color:rgba(255,255,255,.4);">Opret konto</a>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="inner">
+        <span>© 2026 Project Manager</span>
+        <span>Bygget af teamet bag Editorial Blueprint</span>
+    </div>
+</footer>
+
+</body>
+</html>

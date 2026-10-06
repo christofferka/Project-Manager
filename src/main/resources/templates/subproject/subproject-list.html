@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Delprojekter · ' + ${project.name}">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <a th:href="@{/project}">Projekter</a>
+    <span class="sep">/</span>
+    <a th:href="@{'/project/view/' + ${project.id}}" th:text="${project.name}">Projekt</a>
+    <span class="sep">/</span>
+    <span class="current">Delprojekter</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow">Delprojekter</span>
+        <h1 style="margin-top:14px" th:text="${project.name}">Website Redesign</h1>
+        <p class="lede" style="margin-top:8px">
+            Projektet er opdelt i selvstændige spor. Hver bjælke viser status og fremdrift på et øjeblik.
+        </p>
+    </div>
+    <div class="actions" th:if="${canEditSubprojects != false}">
+        <a class="btn primary"
+           th:href="@{'/project/' + ${project.id} + '/subprojects/create'}">+ Nyt delprojekt</a>
+    </div>
+</header>
+
+<!-- Samlet fremdrift strip -->
+<div class="card" style="margin-bottom: 28px"
+     th:with="count=${#lists.size(subprojects)},
+              avgPct=${count > 0 ? #aggregates.sum(subprojects.![progressPercent ?: 0]) / count : 0}">
+    <div class="progress-big">
+        <div class="pb-head">
+            <span class="pb-label">Gennemsnitlig fremdrift på tværs af delprojekter</span>
+            <span class="pb-val"><span class="num" th:text="${#numbers.formatInteger(avgPct, 1)}">42</span><span class="suffix">%</span></span>
+        </div>
+        <div class="pb-track">
+            <div class="pb-fill"
+                 th:classappend="${avgPct >= 80 ? 'done' : (avgPct >= 50 ? 'green' : (avgPct >= 25 ? '' : 'amber'))}"
+                 th:style="'width:' + ${avgPct} + '%'"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--ink-3); margin-top:4px;">
+            <span th:text="|${count} delprojekter|">3 delprojekter</span>
+            <span th:text="|${#lists.size(subprojects.?[progressPercent != null and progressPercent >= 100])} fuldført|">0 fuldført</span>
+        </div>
+    </div>
+</div>
+
+<!-- Delprojekt-kort med stor fremdrift -->
+<div class="grid-2">
+    <div class="card hoverable" th:each="sp, iter : ${subprojects}"
+         th:attr="data-stagger=${iter.count}"
+         th:with="pct=${sp.progressPercent ?: 0}">
+
+        <div class="card-head">
+            <div style="display:flex; gap:12px; align-items:center">
+                <span style="width:36px; height:36px; border-radius:10px;
+                             background: linear-gradient(135deg, var(--brand), var(--purple));
+                             color:#fff; display:grid; place-items:center;
+                             font-weight:800; font-size:14px;"
+                      th:text="${iter.count}">1</span>
+                <h3 th:text="${sp.name}">Frontend</h3>
+            </div>
+            <span class="pb-badge"
+                  th:classappend="${pct >= 100 ? 'done' : (pct >= 60 ? 'on-track' : (pct >= 20 ? 'at-risk' : (pct > 0 ? 'off-track' : 'not-started')))}"
+                  th:text="${pct >= 100 ? 'Fuldført' : (pct >= 60 ? 'På sporet' : (pct >= 20 ? 'Risiko' : (pct > 0 ? 'Bagud' : 'Ikke startet')))}">
+                På sporet
+            </span>
+        </div>
+
+        <p style="color:var(--ink-3); font-size:14px; margin-bottom:18px; min-height:1em;"
+           th:text="${sp.description} ?: ' '">Beskrivelse</p>
+
+        <div class="progress-big">
+            <div class="pb-head">
+                <span class="pb-label">Fremdrift</span>
+                <span class="pb-val"><span class="num" th:text="${pct}">45</span><span class="suffix">%</span></span>
+            </div>
+            <div class="pb-track">
+                <div class="pb-fill"
+                     th:classappend="${pct >= 100 ? 'done' : (pct >= 60 ? 'green' : (pct >= 20 ? '' : 'amber'))}"
+                     th:style="'width:' + ${pct} + '%'"></div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line);">
+            <a class="btn blue sm"
+               th:href="@{'/project/' + ${project.id} + '/tasks?subprojectId=' + ${sp.id}}">Se opgaver →</a>
+            <a class="btn ghost sm"
+               th:if="${canEditSubprojects != false}"
+               th:href="@{'/project/' + ${project.id} + '/subprojects/edit/' + ${sp.id}}">Rediger</a>
+            <form th:if="${canEditSubprojects != false}"
+                  th:action="@{'/project/' + ${project.id} + '/subprojects/delete/' + ${sp.id}}"
+                  method="post" style="display:inline; margin-left:auto"
+                  onsubmit="return confirm('Slet delprojektet?');">
+                <button type="submit" class="btn danger sm">Slet</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="empty" th:if="${#lists.isEmpty(subprojects)}" style="grid-column: 1 / -1">
+        <span class="em">📋</span>
+        <strong>Ingen delprojekter endnu</strong>
+        <span>Opdel projektet i spor for at komme i gang</span>
+    </div>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

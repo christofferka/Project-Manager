@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Rediger bruger'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('admin')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/admin/users}">Administration · Brugere</a>
+    <span class="sep">/</span>
+    <span class="current" th:text="${user.username}">demo</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow">Bruger</span>
+        <h1 style="margin-top:14px" th:text="${user.username}">Rediger bruger</h1>
+        <p class="lede" style="margin-top:8px" th:text="${user.email}">demo@example.com</p>
+    </div>
+    <div class="actions">
+        <a th:href="@{/admin/users}" class="btn ghost">← Tilbage</a>
+    </div>
+</header>
+
+<div class="card" style="max-width:560px">
+    <form class="form" method="post" th:action="@{'/admin/users/' + ${user.id} + '/role'}">
+        <div class="field">
+            <label>Rolle</label>
+            <select name="role">
+                <option value="EMPLOYEE" th:selected="${user.role == 'EMPLOYEE'}">Medarbejder</option>
+                <option value="MANAGER"  th:selected="${user.role == 'MANAGER'}">Manager</option>
+                <option value="ADMIN"    th:selected="${user.role == 'ADMIN'}">Administrator</option>
+                <option value="USER"     th:selected="${user.role == 'USER'}">Bruger</option>
+            </select>
+            <span class="hint">Styrer brugerens adgang på tværs af systemet.</span>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn primary">Gem ændringer <span class="arrow">→</span></button>
+            <a th:href="@{/admin/users}" class="btn ghost">Annuller</a>
+        </div>
+    </form>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

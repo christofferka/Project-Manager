@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Projekter · Dashboard'">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <span class="current">Projekter</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow">Oversigt</span>
+        <h1 style="margin-top:14px">Projekter</h1>
+        <p class="lede" style="margin-top:8px">Klik på et projekt for at se roadmap, timer og økonomi.</p>
+    </div>
+    <div class="actions">
+        <a th:href="@{/project}" class="btn ghost">Alle projekter →</a>
+    </div>
+</header>
+
+<div class="empty">
+    <span class="em">📊</span>
+    <strong>Denne side er under opbygning</strong>
+    <span>Besøg <a th:href="@{/project}" style="color:var(--brand); font-weight:600">projekter</a> for den fulde oversigt.</span>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Info · ' + ${project.name}">Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('projects')}"></header>
+<main>
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <a th:href="@{/project}">Projekter</a>
+    <span class="sep">/</span>
+    <a th:href="@{'/project/view/' + ${project.id}}" th:text="${project.name}">Projekt</a>
+    <span class="sep">/</span>
+    <span class="current">Projektinfo</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow purple">Fuld oversigt</span>
+        <h1 style="margin-top:14px" th:text="${project.name}">Projekt</h1>
+        <p class="lede" style="margin-top:8px" th:text="|Kunde: ${project.customerName}|">Kunde: Alpha Solutions</p>
+    </div>
+</header>
+
+<section class="grid-3" style="margin-bottom:32px">
+    <div class="stat-tile">
+        <div class="icon green">⏱</div>
+        <div class="k">Estimerede timer</div>
+        <div class="v"><span class="num" th:text="${project.estimatedHours ?: 0}">240</span><span class="unit">t</span></div>
+    </div>
+    <div class="stat-tile">
+        <div class="icon blue">💵</div>
+        <div class="k">Timerate</div>
+        <div class="v"><span class="num" th:text="${project.hourlyRate ?: 0}">850</span><span class="unit">kr</span></div>
+    </div>
+    <div class="stat-tile">
+        <div class="icon purple">💰</div>
+        <div class="k">Totalpris</div>
+        <div class="v"><span class="num" th:text="${totalCost ?: 0}">204 000</span><span class="unit">kr</span></div>
+    </div>
+</section>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>
