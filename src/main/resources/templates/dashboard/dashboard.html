@@ -16,7 +16,7 @@
         <span class="eyebrow">Dashboard</span>
         <h1 style="margin-top:14px">God dag, <span th:text="${user.username}">demo</span>.</h1>
         <p class="lede" style="margin-top:8px">
-            Du har adgang til <strong style="color:var(--ink)" th:text="${#lists.size(projects)}">3</strong> projekter. Her er din dag i tal.
+            Du har adgang til <strong style="color:var(--ink)" th:text="${#lists.size(projects)}">3</strong> projekter.
         </p>
     </div>
     <div class="actions" th:if="${user.role == 'ADMIN'}">
@@ -30,7 +30,6 @@
         <div class="icon blue">◧</div>
         <div class="k">Aktive projekter</div>
         <div class="v"><span class="num" th:text="${#lists.size(projects)}">3</span></div>
-        <div class="trend">● Under redaktion</div>
     </div>
     <div class="stat-tile" data-stagger="2">
         <div class="icon green">⏱</div>
@@ -39,7 +38,6 @@
             <span class="num" th:text="${#numbers.formatDecimal(totalHours ?: 0, 1, 0)}">1140</span>
             <span class="unit">t</span>
         </div>
-        <div class="trend">Σ på tværs af alle</div>
     </div>
     <div class="stat-tile" data-stagger="3">
         <div class="icon purple">💰</div>
@@ -48,13 +46,12 @@
             <span class="num" th:text="${#numbers.formatDecimal((totalRate ?: 0) / 1000, 1, 1)}">1 040,5</span>
             <span class="unit">k kr</span>
         </div>
-        <div class="trend">Timer × rate</div>
     </div>
     <div class="stat-tile" data-stagger="4">
         <div class="icon amber">⚑</div>
         <div class="k">Din rolle</div>
         <div class="v" style="font-size:1.5rem" th:text="${user.role == 'ADMIN' ? 'Administrator' : 'Bruger'}">Administrator</div>
-        <div class="trend" th:text="${user.role}">ADMIN</div>
+        <div class="trend" th:text="${user.role}"></div>
     </div>
 </section>
 
