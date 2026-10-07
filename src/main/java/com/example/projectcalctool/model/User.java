@@ -17,6 +17,12 @@ public class User {
     // Rolle (USER eller ADMIN)
     private String role;
 
+    // AI integration (brugeren tilfoejer selv sin API-noegle)
+    // Provider: "anthropic", "openai", eller null hvis slaaet fra
+    private String aiProvider;
+    private String aiApiKey;
+    private String aiModel;
+
     // Tom constructor
     public User() {
         this.role = "USER";
@@ -73,5 +79,19 @@ public class User {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getAiProvider() { return aiProvider; }
+    public void setAiProvider(String aiProvider) { this.aiProvider = aiProvider; }
+
+    public String getAiApiKey() { return aiApiKey; }
+    public void setAiApiKey(String aiApiKey) { this.aiApiKey = aiApiKey; }
+
+    public String getAiModel() { return aiModel; }
+    public void setAiModel(String aiModel) { this.aiModel = aiModel; }
+
+    public boolean hasAiConfigured() {
+        return aiProvider != null && !aiProvider.isBlank()
+                && aiApiKey != null && !aiApiKey.isBlank();
     }
 }

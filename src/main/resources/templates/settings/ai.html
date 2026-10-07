@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI indstillinger · Project Manager</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<header th:replace="~{layout :: header('')}"></header>
+<main>
+
+<div class="crumbs">
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <span class="sep">/</span>
+    <span class="current">AI indstillinger</span>
+</div>
+
+<header class="page-head">
+    <div class="title-block">
+        <span class="eyebrow purple">AI rådgiver</span>
+        <h1 style="margin-top:14px">Tilføj din egen AI nøgle</h1>
+        <p class="lede" style="margin-top:8px">
+            Rådgiveren bruger din egen API nøgle. Den gemmes kun på din profil og bruges kun til at svare dig.
+            Du betaler selv forbruget hos udbyderen.
+        </p>
+    </div>
+</header>
+
+<div th:if="${param.saved}" class="alert info" style="margin-bottom:20px">
+    Indstillinger gemt.
+</div>
+<div th:if="${param.error}" class="alert error" style="margin-bottom:20px">
+    <span th:switch="${param.error}">
+        <span th:case="'provider'">Ukendt udbyder.</span>
+        <span th:case="'key'">Du mangler at indsætte en API nøgle.</span>
+        <span th:case="*">Noget gik galt. Prøv igen.</span>
+    </span>
+</div>
+
+<div class="split">
+    <div class="card">
+        <form class="form wide" method="post" th:action="@{/settings/ai}">
+
+            <div class="field">
+                <label>AI udbyder</label>
+                <select name="provider" id="provider">
+                    <option value="off"       th:selected="${user.aiProvider == null or user.aiProvider == ''}">Slået fra</option>
+                    <option value="anthropic" th:selected="${user.aiProvider == 'anthropic'}">Anthropic (Claude)</option>
+                    <option value="openai"    th:selected="${user.aiProvider == 'openai'}">OpenAI (GPT)</option>
+                </select>
+                <span class="hint">Hvis slået fra, forsvinder knappen i hjørnet.</span>
+            </div>
+
+            <div class="field" id="keyField">
+                <label>API nøgle</label>
+                <input type="password" name="apiKey"
+                       th:placeholder="${user.hasAiConfigured() ? 'Nøgle er gemt (indsæt kun hvis du vil skifte)' : 'sk-ant-... eller sk-...'}"
+                       autocomplete="off">
+                <span class="hint">Nøglen vises aldrig i klartekst igen. Lad feltet være tomt for at beholde den eksisterende.</span>
+            </div>
+
+            <div class="field" id="modelField">
+                <label>Model (valgfri)</label>
+                <input type="text" name="model"
+                       th:value="${user.aiModel}"
+                       placeholder="fx claude-haiku-4-5-20251001 eller gpt-4o-mini">
+                <span class="hint">Lad være tom for at bruge en fornuftig default.</span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Gem indstillinger</button>
+                <a th:href="@{/dashboard}" class="btn ghost">Tilbage</a>
+            </div>
+        </form>
+    </div>
+
+    <aside>
+        <div class="section-title"><h2>Sådan får du en nøgle</h2></div>
+        <div class="card">
+            <h3 style="font-size:1.05rem; margin-bottom:10px">Claude (Anthropic)</h3>
+            <ol style="padding-left:20px; color:var(--ink-2); font-size:14px; line-height:1.7; margin-bottom:18px">
+                <li>Opret konto på <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a></li>
+                <li>Gå til <b>Settings → API Keys</b></li>
+                <li>Klik <b>Create Key</b> og kopier den (den starter med <code>sk-ant-</code>)</li>
+                <li>Indsæt den her i feltet</li>
+            </ol>
+
+            <h3 style="font-size:1.05rem; margin-bottom:10px">GPT (OpenAI)</h3>
+            <ol style="padding-left:20px; color:var(--ink-2); font-size:14px; line-height:1.7; margin:0">
+                <li>Opret konto på <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a></li>
+                <li>Gå til <b>API keys</b> i venstre menu</li>
+                <li>Klik <b>Create new secret key</b> (starter med <code>sk-</code>)</li>
+                <li>Indsæt den her</li>
+            </ol>
+        </div>
+
+        <div class="section-title" style="margin-top:28px"><h2>Hvad koster det?</h2></div>
+        <div class="card">
+            <p style="color:var(--ink-2); font-size:14px; line-height:1.6; margin:0">
+                Rådgiveren bruger små mængder: typisk 1 til 3 ører per svar med Claude Haiku,
+                lidt mere med GPT-4o-mini. Du har også en rate limit på 30 beskeder i timen for ikke at løbe løbsk.
+            </p>
+        </div>
+    </aside>
+</div>
+
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

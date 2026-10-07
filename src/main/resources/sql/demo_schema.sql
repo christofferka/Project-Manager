@@ -5,7 +5,10 @@ CREATE TABLE IF NOT EXISTS user (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL
+    role VARCHAR(50) NOT NULL,
+    ai_provider VARCHAR(32),
+    ai_api_key VARCHAR(255),
+    ai_model VARCHAR(64)
 );
 
 CREATE TABLE IF NOT EXISTS project (
